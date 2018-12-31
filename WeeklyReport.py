@@ -1,4 +1,4 @@
-import os, sys, getopt, getpass, time, logging
+import os, sys, getopt, getpass, time, logging, logging.config
 import jira.client
 from jira.client import JIRA
 
@@ -12,10 +12,11 @@ from jira.client import JIRA
 # handlers	 加入至根日誌之處理器, 不可與 stream, filename 同時存在
 # stream	 標準輸出之串流
 
-logging.basicConfig(level=logging.DEBUG,
-filename='WeeklyReportLog.txt',
-datefmt='%Y%m%dT%H%M%S',
-format='%(asctime)s - %(levelname)s : %(message)s')
+logging.config.fileConfig('logging.conf')
+# logging.basicConfig(level=logging.DEBUG,
+# filename='WeeklyReportLog.txt',
+# datefmt='%Y%m%dT%H%M%S',
+# format='%(asctime)s - %(levelname)s : %(message)s')
 #  格式化字串	 說明
 #  %(asctime)s	 日期時間, 格式為 YYYY-MM-DD HH:mm:SS,ms (毫秒)
 #  %(message)s	 使用者自訂訊息
@@ -66,8 +67,8 @@ issues_in_project = jira.search_issues('status was "In Progress" during (startOf
 i = 0
 for issue in issues_in_project:
     logging.debug(issue.raw)
-    for field_name in issue.raw['fields']:
-        logging.debug("Field:%s, Value:%s" % (field_name, issue.raw['fields'][field_name]))
+    # for field_name in issue.raw['fields']:
+    #     logging.debug("Field:%s, Value:%s" % (field_name, issue.raw['fields'][field_name]))
     logging.debug("key: %s" % issue.key)
     logging.debug("project key: %s" % issue.fields.project.key)
     logging.debug("issue type: %s" % issue.fields.issuetype.name)
@@ -80,8 +81,3 @@ for issue in issues_in_project:
     i = i + 1
     if i >= 1:
         break
-    # log_entry_count = len(issue.fields.comments)
-    # for i in range(log_entry_count):
-    #     logging.debug(issue.key, issue.fields.worklog.worklogs[i].timeSpent, issue.fields.worklog.worklogs[i].updated, issue.fields.worklog.worklogs[i].updateAuthor)    # log_entry_count = len(value.fields.worklog.worklogs)
-    # for i in range(log_entry_count):
-    #     logging.debug(issue.key, issue.fields.worklog.worklogs[i].timeSpent, issue.fields.worklog.worklogs[i].updated, issue.fields.worklog.worklogs[i].updateAuthor)
